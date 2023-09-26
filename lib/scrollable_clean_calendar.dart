@@ -85,6 +85,10 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// The dropdown icon widget
   final Widget? dropdownIconWidget;
 
+  final Widget? monthSelectionWidget;
+
+  final Widget? yearSelectionWidget;
+
   /// it used when use [yearSelection()] / [monthSelection()] default builder
   final Function(DateTime)? onTimeChange;
 
@@ -98,10 +102,6 @@ class ScrollableCleanCalendar extends StatefulWidget {
 
   /// A builder to make a customized day of calendar
   final Widget Function(BuildContext context, DayValues values)? dayBuilder;
-
-  /// Right now it's just passing on tap function to another build in [yearSelection()] / [monthSelection()]
-  /// Might be change if need to fully customized [yearSelection()] / [monthSelection()]
-  final Future<DateTime?> Function()? onTapSwitchDateTime;
 
   /// The controller of ScrollableCleanCalendar
   final CleanCalendarController calendarController;
@@ -134,9 +134,10 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.dayTextStyle,
     this.dayRadius = 6,
     this.onTimeChange,
-    this.onTapSwitchDateTime,
     this.childAspectRationDay = 1.0,
     this.childAspectRatioMonth = 1.0,
+    this.monthSelectionWidget,
+    this.yearSelectionWidget,
     required this.calendarController,
   }) : assert(layout != null ||
             (monthBuilder != null &&
@@ -267,31 +268,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   }
 
   Widget monthSelection(List<DateTime> month) {
-    if (widget.onTapSwitchDateTime != null) {
-      return GestureDetector(
-        onTap: () async => await widget.onTapSwitchDateTime?.call(),
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(32),
-            border: Border.all(color: const Color(0xff00B7BD)),
-          ),
-          child: ListenableBuilder(
-            listenable: widget.calendarController,
-            builder: (_, __) {
-              final value = widget.calendarController.selectedMonth;
-              return Text(
-                '${DateFormat('MMMM', widget.locale).format(DateTime(value.year, value.month)).capitalize()} ${DateFormat('yyyy', widget.locale).format(DateTime(value.year, value.month))}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xff00B7BD),
-                ),
-              );
-            },
-          ),
-        ),
-      );
+    if (widget.monthSelectionWidget != null) {
+      return widget.monthSelectionWidget!;
     }
     return Container(
       decoration: BoxDecoration(
@@ -330,31 +308,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   }
 
   Widget yearSelection(List<DateTime> year) {
-    if (widget.onTapSwitchDateTime != null) {
-      return GestureDetector(
-        onTap: () async => await widget.onTapSwitchDateTime?.call(),
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(32),
-            border: Border.all(color: const Color(0xff00B7BD)),
-          ),
-          child: ListenableBuilder(
-            listenable: widget.calendarController,
-            builder: (_, __) {
-              final value = widget.calendarController.selectedMonth;
-              return Text(
-                '${value.year}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xff00B7BD),
-                ),
-              );
-            },
-          ),
-        ),
-      );
+    if (widget.yearSelectionWidget != null) {
+      return widget.yearSelectionWidget!;
     }
     return Container(
       decoration: BoxDecoration(
