@@ -123,7 +123,8 @@ class CleanCalendarController extends ChangeNotifier {
 
     years.sort();
 
-    selectedMonth = months[DateTime.now().month - 1];
+    selectedMonth =
+        months[(initialDateSelected?.month ?? DateTime.now().month) - 1];
     selectedYear = DateTime(selectedMonth.year);
 
     if (initialDateSelected != null &&
